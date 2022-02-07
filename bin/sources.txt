@@ -1,0 +1,8 @@
+yt-dlp [Github]
+https://github.com/yt-dlp/yt-dlp
+
+ffmpeg [FFmpeg-Builds]
+https://github.com/BtbN/FFmpeg-Builds/releases
+
+HandBrakeCLI [handbrake.fr]
+https://handbrake.fr/downloads2.php
