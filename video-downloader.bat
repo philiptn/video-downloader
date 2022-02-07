@@ -3,7 +3,7 @@
 
 @echo off
 
-SET ffmpeg=bin\ffmpeg-n4.4-latest-win64-lgpl-4.4\bin\ffmpeg.exe
+SET ffmpeg=bin\ffmpeg-n4.4-latest-win64-gpl-4.4\bin\ffmpeg.exe
 SET HandBrakeCLI=bin\HandBrakeCLI-1.5.1-win-x86_64\HandBrakeCLI.exe
 SET yt-dlp=bin\yt-dlp\yt-dlp.exe
 
