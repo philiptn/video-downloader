@@ -1,5 +1,5 @@
 :: Made by Philip Tønnessen
-:: 26.01.2021 - 07.02.2022
+:: 26.01.2021 - 22.02.2022
 
 @echo off
 
@@ -47,7 +47,7 @@ goto script_mode)
 
 :output_folder_q
 echo. 
-SET /P output_q="Would you like to save the file(s) in a separate folder? (y/n): "
+SET /P output_q="Would you like to save the file(s) in a separate folder? (y/N): " || SET output_q=n
 IF /I "%output_q%" == "y" (
 goto folder_sel
 ) ELSE IF /I "%output_q%" == "n" (
@@ -68,10 +68,10 @@ IF NOT EXIST "exports\%folder%" mkdir "exports\%folder%"
 echo. 
 echo Supported formats:
 echo (1) direct
-echo (2) mp4
+echo (2) mp4 (default)
 echo (3) mp3
 echo. 
-SET /P output_format="Select output format (1-3): "
+SET /P output_format="Select output format (1-3): " || SET output_format=2
 IF "%output_format%" == "1" (
 SET dl_options=
 goto download
@@ -89,12 +89,12 @@ goto output_format)
 :mp3_bitrate
 echo. 
 echo MP3 bitrate:
-echo (1) 320 kbps
+echo (1) 320 kbps (default)
 echo (2) 256 kbps
 echo (3) 192 kbps
 echo (4) 128 kbps
 echo. 
-SET /P br_input="Select output bitrate (1-4): "
+SET /P br_input="Select output bitrate (1-4): " || SET br_input=1
 IF "%br_input%" == "1" (
 SET mp3_br=320k
 goto download
@@ -114,7 +114,7 @@ goto mp3_bitrate)
 
 :encoder_selection
 echo. 
-SET /P enc_input="Do you have a NVIDIA GPU? (y/n): "
+SET /P enc_input="Do you have a NVIDIA GPU? (Y/n): " || SET enc_input=y
 IF /I "%enc_input%" == "y" (
 SET ffmpeg_enc=h264_nvenc
 SET hbrake_enc=nvenc_h264
@@ -130,7 +130,7 @@ goto encoder_selection)
 
 :autocrop_selection
 echo.
-SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/n): "
+SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/N): " || SET crop_input=n
 IF /I "%crop_input%" == "y" (
 SET crop_sel=--loose-crop
 ) ELSE IF /I "%crop_input%" == "n" (
