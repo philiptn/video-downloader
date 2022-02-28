@@ -1,3 +1,6 @@
+youtube-dl [http://ytdl-org.github.io]
+http://ytdl-org.github.io/youtube-dl/download.html
+
 yt-dlp [Github]
 https://github.com/yt-dlp/yt-dlp
 

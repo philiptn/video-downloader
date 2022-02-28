@@ -1,11 +1,12 @@
 :: Made by Philip Tønnessen
-:: 26.01.2021 - 22.02.2022
+:: 26.01.2021 - 28.02.2022
 
 @echo off
 
 SET ffmpeg=bin\ffmpeg-n4.4-latest-win64-gpl-4.4\bin\ffmpeg.exe
 SET HandBrakeCLI=bin\HandBrakeCLI-1.5.1-win-x86_64\HandBrakeCLI.exe
 SET yt-dlp=bin\yt-dlp\yt-dlp.exe
+SET youtube-dl=bin\youtube-dl\youtube-dl.exe
 
 IF NOT EXIST exports mkdir exports
 
@@ -14,23 +15,25 @@ SET width=3840
 SET height=2160
 
 :URL_input
-SET /P url="Input video/playlist URL(s)(separated by spaces): "
+SET /P url="Input video/playlist URL(s)(separated by spaces): [94m"
 
 :script_mode
-echo. 
-echo Available script modes:
-echo (1) Direct
-echo (2) Auto (mp4)
+echo [0m
+echo [4mAvailable script modes[0m
+echo (1) [92mDirect[0m
+echo (2) MP4
 echo (3) Custom
 echo. 
-SET /P mode="Select the preferred mode (1-3): "
+SET /P mode="Select the preferred mode (1-3): " || SET mode=1
 IF "%mode%" == "1" (
 SET output_folder=exports
+SET downloader=%yt-dlp%
 SET dl_options=
 SET output_format=1
 goto download
 ) ELSE IF "%mode%" == "2" (
 SET output_folder=exports
+SET downloader=%yt-dlp%
 SET dl_options=
 SET ffmpeg_enc=libx264
 SET hbrake_enc=x264
@@ -39,15 +42,34 @@ SET crop_input=n
 SET crop_sel=--crop 0:0:0:0
 goto download
 ) ELSE IF "%mode%" == "3" (
-goto output_folder_q
+goto downloader_backend
 ) ELSE (
 echo.
 echo Error: Invalid input
 goto script_mode)
 
+:downloader_backend
+echo. 
+echo [4mAvailable downloaders[0m
+echo (1) [92myt-dlp[0m
+echo (2) youtube-dl
+echo. 
+SET /P down_q="Select downloader backend (1-2): " || SET down_q=1
+IF "%down_q%" == "1" (
+SET downloader=%yt-dlp%
+) ELSE IF "%down_q%" == "2" (
+echo.
+echo [44mNOTE: youtube-dl requires an installation of vcredist_x86
+echo       located in 'bin\youtube-dl\vcredist_x86.exe'       [0m
+SET downloader=%youtube-dl%
+) ELSE (
+echo. 
+echo Error: Invalid input
+goto downloader_backend)
+
 :output_folder_q
 echo. 
-SET /P output_q="Would you like to save the file(s) in a separate folder? (y/N): " || SET output_q=n
+SET /P output_q="Would you like to save the file(s) in a separate folder? (y/[92mN[0m): " || SET output_q=n
 IF /I "%output_q%" == "y" (
 goto folder_sel
 ) ELSE IF /I "%output_q%" == "n" (
@@ -66,10 +88,10 @@ IF NOT EXIST "exports\%folder%" mkdir "exports\%folder%"
 
 :output_format
 echo. 
-echo Supported formats:
-echo (1) direct
-echo (2) mp4 (default)
-echo (3) mp3
+echo [4mSupported formats[0m
+echo (1) Direct
+echo (2) [92mMP4[0m
+echo (3) MP3
 echo. 
 SET /P output_format="Select output format (1-3): " || SET output_format=2
 IF "%output_format%" == "1" (
@@ -88,8 +110,8 @@ goto output_format)
 
 :mp3_bitrate
 echo. 
-echo MP3 bitrate:
-echo (1) 320 kbps (default)
+echo [4mMP3 bitrate[0m
+echo (1) [92m320 kbps[0m
 echo (2) 256 kbps
 echo (3) 192 kbps
 echo (4) 128 kbps
@@ -114,7 +136,7 @@ goto mp3_bitrate)
 
 :encoder_selection
 echo. 
-SET /P enc_input="Do you have a NVIDIA GPU? (Y/n): " || SET enc_input=y
+SET /P enc_input="Do you have a NVIDIA GPU? ([92mY[0m/n): " || SET enc_input=y
 IF /I "%enc_input%" == "y" (
 SET ffmpeg_enc=h264_nvenc
 SET hbrake_enc=nvenc_h264
@@ -130,7 +152,7 @@ goto encoder_selection)
 
 :autocrop_selection
 echo.
-SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/N): " || SET crop_input=n
+SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/[92mN[0m): " || SET crop_input=n
 IF /I "%crop_input%" == "y" (
 SET crop_sel=--loose-crop
 ) ELSE IF /I "%crop_input%" == "n" (
@@ -142,7 +164,7 @@ goto autocrop_selection)
 
 :download
 mkdir tmp
-%yt-dlp% %url% %dl_options% --restrict-filenames -o tmp\%%(title)s.%%(ext)s
+%downloader% %url% %dl_options% --restrict-filenames -o tmp\%%(title)s.%%(ext)s
 
 :add_spaces_in_filename
 Setlocal enabledelayedexpansion
