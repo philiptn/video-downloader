@@ -1,5 +1,5 @@
 :: Made by Philip Tønnessen
-:: 26.01.2021 - 28.02.2022
+:: 26.01.2021 - 01.03.2022
 
 @echo off
 
@@ -20,7 +20,7 @@ SET /P url="Input video/playlist URL(s)(separated by spaces): [94m"
 :script_mode
 echo [0m
 echo [4mAvailable script modes[0m
-echo (1) [92mDirect[0m
+echo (1) [32mDirect[0m
 echo (2) MP4
 echo (3) Custom
 echo. 
@@ -51,7 +51,7 @@ goto script_mode)
 :downloader_backend
 echo. 
 echo [4mAvailable downloaders[0m
-echo (1) [92myt-dlp[0m
+echo (1) [32myt-dlp[0m
 echo (2) youtube-dl
 echo. 
 SET /P down_q="Select downloader backend (1-2): " || SET down_q=1
@@ -69,7 +69,7 @@ goto downloader_backend)
 
 :output_folder_q
 echo. 
-SET /P output_q="Would you like to save the file(s) in a separate folder? (y/[92mN[0m): " || SET output_q=n
+SET /P output_q="Would you like to save the file(s) in a separate folder? (y/[32mN[0m): " || SET output_q=n
 IF /I "%output_q%" == "y" (
 goto folder_sel
 ) ELSE IF /I "%output_q%" == "n" (
@@ -90,7 +90,7 @@ IF NOT EXIST "exports\%folder%" mkdir "exports\%folder%"
 echo. 
 echo [4mSupported formats[0m
 echo (1) Direct
-echo (2) [92mMP4[0m
+echo (2) [32mMP4[0m
 echo (3) MP3
 echo. 
 SET /P output_format="Select output format (1-3): " || SET output_format=2
@@ -111,7 +111,7 @@ goto output_format)
 :mp3_bitrate
 echo. 
 echo [4mMP3 bitrate[0m
-echo (1) [92m320 kbps[0m
+echo (1) [32m320 kbps[0m
 echo (2) 256 kbps
 echo (3) 192 kbps
 echo (4) 128 kbps
@@ -136,7 +136,7 @@ goto mp3_bitrate)
 
 :encoder_selection
 echo. 
-SET /P enc_input="Do you have a NVIDIA GPU? ([92mY[0m/n): " || SET enc_input=y
+SET /P enc_input="Do you have a NVIDIA GPU? ([32mY[0m/n): " || SET enc_input=y
 IF /I "%enc_input%" == "y" (
 SET ffmpeg_enc=h264_nvenc
 SET hbrake_enc=nvenc_h264
@@ -152,7 +152,7 @@ goto encoder_selection)
 
 :autocrop_selection
 echo.
-SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/[92mN[0m): " || SET crop_input=n
+SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/[32mN[0m): " || SET crop_input=n
 IF /I "%crop_input%" == "y" (
 SET crop_sel=--loose-crop
 ) ELSE IF /I "%crop_input%" == "n" (
