@@ -18,13 +18,13 @@ SET height=2160
 SET timeout=2
 
 :URL_input
-SET /P url="Input video/playlist URL(s)(separated by spaces): [4m"
+SET /P url="Input video/playlist URL(s)(separated by spaces): [1m"
 
 :script_mode
 echo [0m
 cls
 echo [0;4m                      
-echo [4mAvailable script modes[0m
+echo Available script modes[0m
 echo.
 echo (1) [1;93mDirect[0m
 echo (2) MP4
