@@ -17,6 +17,11 @@ SET height=2160
 :: Error timeout time (in seconds)
 SET timeout=2
 
+:: Output quality of encoded videos
+:: QC-25 produces the most resonable quality,
+:: while QC-27 produces similar filesizes to Direct.
+SET hbrake_quality=25
+
 :URL_input
 SET /P url="Input video/playlist URL(s)(separated by spaces): [1m"
 
@@ -323,4 +328,4 @@ FOR /F "tokens=*" %%G IN ('dir /b *.%ext%') DO %ffmpeg% -i "%%G" -vcodec copy -m
 FOR /F "tokens=*" %%G IN ('dir /b *.%ext%') DO %ffmpeg% -i "%%G" -i "%%~nG.m4a" -c:v %ffmpeg_enc% %enc_quality% -acodec copy -map 0:0 -map 1:0 "%output_folder%\%%~nG.mp4" && DEL /F "%%G" && DEL /F "%%~nG.m4a" && goto ext_list
 
 :hbrake_encode
-FOR /F "tokens=*" %%G IN ('dir /b *.mp4') DO %HandBrakeCLI% --input "%%G" %crop_sel% --maxWidth %width% --maxHeight %height% --encoder %hbrake_enc% --quality 27 --aencoder copy --output "tmp_%%G" && DEL /F "%%G" && rename "tmp_%%G" "%%G" && move "%%G" "%output_folder%" && goto ext_list
+FOR /F "tokens=*" %%G IN ('dir /b *.mp4') DO %HandBrakeCLI% --input "%%G" %crop_sel% --maxWidth %width% --maxHeight %height% --encoder %hbrake_enc% --quality %hbrake_quality% --aencoder copy --output "tmp_%%G" && DEL /F "%%G" && rename "tmp_%%G" "%%G" && move "%%G" "%output_folder%" && goto ext_list
