@@ -1,5 +1,5 @@
 :: Made by Philip Tønnessen
-:: 26.01.2021 - 01.03.2022
+:: 26.01.2021 - 03.03.2022
 
 @echo off
 
@@ -14,13 +14,19 @@ IF NOT EXIST exports mkdir exports
 SET width=3840
 SET height=2160
 
+:: Error timeout time (in seconds)
+SET timeout=2
+
 :URL_input
-SET /P url="Input video/playlist URL(s)(separated by spaces): [94m"
+SET /P url="Input video/playlist URL(s)(separated by spaces): [4m"
 
 :script_mode
 echo [0m
+cls
+echo [0;4m                      
 echo [4mAvailable script modes[0m
-echo (1) [32mDirect[0m
+echo.
+echo (1) [1;93mDirect[0m
 echo (2) MP4
 echo (3) Custom
 echo. 
@@ -44,14 +50,17 @@ goto download
 ) ELSE IF "%mode%" == "3" (
 goto downloader_backend
 ) ELSE (
-echo.
-echo Error: Invalid input
+cls
+echo [31mError:[0m Invalid input
+timeout /t %timeout% >nul
 goto script_mode)
 
 :downloader_backend
-echo. 
-echo [4mAvailable downloaders[0m
-echo (1) [32myt-dlp[0m
+cls
+echo [4m                     
+echo Available downloaders[0m
+echo.
+echo (1) [1;93myt-dlp[0m
 echo (2) youtube-dl
 echo. 
 SET /P down_q="Select downloader backend (1-2): " || SET down_q=1
@@ -61,36 +70,43 @@ SET downloader=%yt-dlp%
 echo.
 echo [44mNOTE: youtube-dl requires an installation of vcredist_x86
 echo       located in 'bin\youtube-dl\vcredist_x86.exe'       [0m
+echo.
+pause
 SET downloader=%youtube-dl%
 ) ELSE (
-echo. 
-echo Error: Invalid input
+cls
+echo [31mError:[0m Invalid input
+timeout /t %timeout% >nul
 goto downloader_backend)
 
 :output_folder_q
-echo. 
-SET /P output_q="Would you like to save the file(s) in a separate folder? (y/[32mN[0m): " || SET output_q=n
+echo.
+SET /P output_q="Would you like to save the file(s) in a separate folder? (y/[1;93mN[0m): " || SET output_q=n
 IF /I "%output_q%" == "y" (
 goto folder_sel
 ) ELSE IF /I "%output_q%" == "n" (
 SET output_folder=exports
 goto output_format
 ) ELSE (
-echo. 
-echo Error: Invalid input
+cls
+echo [31mError:[0m Invalid input
+timeout /t %timeout% >nul
 goto output_folder_q)
 
 :folder_sel
-echo. 
-SET /P folder="Specify folder name: "
+echo.
+SET /P folder="Specify folder name: [93;4m"
 SET output_folder=exports\%folder%
 IF NOT EXIST "exports\%folder%" mkdir "exports\%folder%"
 
 :output_format
-echo. 
-echo [4mSupported formats[0m
+echo [0m
+cls
+echo [0;4m                 
+echo Supported formats[0m
+echo.
 echo (1) Direct
-echo (2) [32mMP4[0m
+echo (2) [1;93mMP4[0m
 echo (3) MP3
 echo. 
 SET /P output_format="Select output format (1-3): " || SET output_format=2
@@ -104,14 +120,17 @@ goto encoder_selection
 SET dl_options=-f bestaudio
 goto mp3_bitrate
 ) ELSE (
-echo. 
-echo Error: Invalid input
+cls
+echo [31mError:[0m Invalid input
+timeout /t %timeout% >nul
 goto output_format)
 
 :mp3_bitrate
-echo. 
-echo [4mMP3 bitrate[0m
-echo (1) [32m320 kbps[0m
+cls
+echo [4m           
+echo MP3 bitrate[0m
+echo.
+echo (1) [1;93m320 kbps[0m
 echo (2) 256 kbps
 echo (3) 192 kbps
 echo (4) 128 kbps
@@ -130,13 +149,14 @@ goto download
 SET mp3_br=128k
 goto download
 ) ELSE (
-echo. 
-echo Error: Invalid input
+cls
+echo [31mError:[0m Invalid input
+timeout /t %timeout% >nul
 goto mp3_bitrate)
 
 :encoder_selection
-echo. 
-SET /P enc_input="Do you have a NVIDIA GPU? ([32mY[0m/n): " || SET enc_input=y
+echo.
+SET /P enc_input="Do you have a NVIDIA GPU? ([1;93mY[0m/n): " || SET enc_input=y
 IF /I "%enc_input%" == "y" (
 SET ffmpeg_enc=h264_nvenc
 SET hbrake_enc=nvenc_h264
@@ -146,23 +166,26 @@ SET ffmpeg_enc=libx264
 SET hbrake_enc=x264
 SET enc_quality=
 ) ELSE (
-echo. 
-echo Error: Invalid input
+cls
+echo [31mError:[0m Invalid input
+timeout /t %timeout% >nul
 goto encoder_selection)
 
 :autocrop_selection
 echo.
-SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/[32mN[0m): " || SET crop_input=n
+SET /P crop_input="Do you want to auto-crop the video (remove black bars etc.)? (y/[1;93mN[0m): " || SET crop_input=n
 IF /I "%crop_input%" == "y" (
 SET crop_sel=--loose-crop
 ) ELSE IF /I "%crop_input%" == "n" (
 SET crop_sel=--crop 0:0:0:0
 ) ELSE (
-echo. 
-echo Error: Invalid input
+cls
+echo [31mError:[0m Invalid input
+timeout /t %timeout% >nul
 goto autocrop_selection)
 
 :download
+cls
 mkdir tmp
 %downloader% %url% %dl_options% --restrict-filenames -o tmp\%%(title)s.%%(ext)s
 
@@ -276,9 +299,11 @@ goto conv_to_mp3
 )
 
 :conv_to_mp3
+cls
 FOR /F "tokens=*" %%G IN ('dir /b *.%ext%') DO %ffmpeg% -i "%%G" -vn -b:a %mp3_br% "%%~nG.mp3" && DEL /F "%%G" && move "%%~nG.mp3" "%output_folder%" && goto ext_list
 
 :conv_audio
+cls
 FOR /F "tokens=*" %%G IN ('dir /b *.%ext%') DO %ffmpeg% -i "%%G" -vn -aq 6 "%%~nG.m4a" && goto navigate_encoder
 
 :navigate_encoder
