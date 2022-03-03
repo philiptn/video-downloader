@@ -51,7 +51,7 @@ goto download
 goto downloader_backend
 ) ELSE (
 cls
-echo [31mError:[0m Invalid input
+echo [31mError:[0m [1mInvalid input[0m
 timeout /t %timeout% >nul
 goto script_mode)
 
@@ -75,7 +75,7 @@ pause
 SET downloader=%youtube-dl%
 ) ELSE (
 cls
-echo [31mError:[0m Invalid input
+echo [31mError:[0m [1mInvalid input[0m
 timeout /t %timeout% >nul
 goto downloader_backend)
 
@@ -89,13 +89,13 @@ SET output_folder=exports
 goto output_format
 ) ELSE (
 cls
-echo [31mError:[0m Invalid input
+echo [31mError:[0m [1mInvalid input[0m
 timeout /t %timeout% >nul
 goto output_folder_q)
 
 :folder_sel
 echo.
-SET /P folder="Specify folder name: [93;4m"
+SET /P folder="Specify folder name: [1m"
 SET output_folder=exports\%folder%
 IF NOT EXIST "exports\%folder%" mkdir "exports\%folder%"
 
@@ -121,7 +121,7 @@ SET dl_options=-f bestaudio
 goto mp3_bitrate
 ) ELSE (
 cls
-echo [31mError:[0m Invalid input
+echo [31mError:[0m [1mInvalid input[0m
 timeout /t %timeout% >nul
 goto output_format)
 
@@ -150,7 +150,7 @@ SET mp3_br=128k
 goto download
 ) ELSE (
 cls
-echo [31mError:[0m Invalid input
+echo [31mError:[0m [1mInvalid input[0m
 timeout /t %timeout% >nul
 goto mp3_bitrate)
 
@@ -167,7 +167,7 @@ SET hbrake_enc=x264
 SET enc_quality=
 ) ELSE (
 cls
-echo [31mError:[0m Invalid input
+echo [31mError:[0m [1mInvalid input[0m
 timeout /t %timeout% >nul
 goto encoder_selection)
 
@@ -180,7 +180,7 @@ SET crop_sel=--loose-crop
 SET crop_sel=--crop 0:0:0:0
 ) ELSE (
 cls
-echo [31mError:[0m Invalid input
+echo [31mError:[0m [1mInvalid input[0m
 timeout /t %timeout% >nul
 goto autocrop_selection)
 
